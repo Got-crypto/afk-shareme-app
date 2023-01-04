@@ -16,13 +16,30 @@ export default function PinDetail({user}){
     const [comment, setComment] = useState('')
     const [addingComment, setAddingComment] = useState(false)
     const { pinId } = useParams()
+    const [pinComments, setPinComments] = useState([])
 
-    
     const addComment = async () => {
         if( comment ) {
             setAddingComment(true)
 
+            const newComment = {
+                        comment,
+                        _key: uuidv4(),
+                        postedBy: {
+                            _type: 'postedBy',
+                            _ref: user._id,
+                            image: user.image,
+                            id: user._id,
+                            userName: user.userName
+                        }
+                    }
+
             try {
+                
+                setPinComments( stuff => [
+                    ...stuff, newComment
+                ] )
+                
                 await client.patch(pinId).setIfMissing({
                     comments: []
                 })
@@ -36,11 +53,10 @@ export default function PinDetail({user}){
                 }])
                 .commit()
 
-                fetchPinDetails()
                 setComment('')
                 setAddingComment(false)
 
-                window.location.reload() 
+                // window.location.reload() 
             } catch (error) {
                 console.log('error posting a comment', error)
             }
@@ -65,6 +81,15 @@ export default function PinDetail({user}){
         
         
     }
+
+    useEffect(()=>{
+        if( pinDetails ) {
+            const { comments } = pinDetails
+            setPinComments(comments)
+        }
+
+
+    }, [pinDetails])
     
     useEffect(() => {
         fetchPinDetails()
@@ -118,18 +143,18 @@ export default function PinDetail({user}){
                         Comments
                     </h2>
                     <div className="max-h-370 overflow-y-auto">
-                        {pinDetails?.comments?.map((comment, index) => {
+                        {pinComments?.map((comment, index) => {
                             return <div className="flex gap-2 mt-5 items-center bg-white rounded-lg" key={index}>
                                 <img
-                                    src={comment.postedBy.image}
+                                    src={comment?.postedBy?.image}
                                     alt="user-profile"
                                     className="w-10 h-10 rounded-full cursor-pointer"
                                 />
                                 <div className="flex flex-col">
                                     <p className="font-bold">
-                                        {comment.postedBy.userName}
+                                        {comment?.postedBy?.userName}
                                     </p>
-                                    <p>{comment.comment}</p>
+                                    <p>{comment?.comment}</p>
                                 </div>
                             </div>
                         })}

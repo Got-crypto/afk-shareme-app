@@ -1,11 +1,11 @@
 import { AiOutlineLogout } from "react-icons/ai"
 import { useParams, useNavigate } from 'react-router-dom'
-import { GoogleLogout } from 'react-google-login'
 import { useState } from "react"
 import { useEffect } from "react"
 import { userCreatedPinsQuery, userQuery, userSavedPinsQuery } from "../utils/data"
 import { client } from "../client"
 import MasonryLayout from "./MasonryLayout"
+import { googleLogout } from "@react-oauth/google"
 
 const randomImage = 'https://source.unsplash.com/1600x900/?nature,photography,technology,gaming'
 
@@ -56,7 +56,10 @@ export default function UserProfile(){
         populateCreatedPins()
     }, [text, userId])
 
-    const logout = ()=> {
+    const logout = () => {
+        console.log("logging out...");
+
+        googleLogout()
         localStorage.clear()
 
         navigate('/login')
@@ -81,22 +84,15 @@ export default function UserProfile(){
                         <h1 className="font-bold text-3xl text-center mt-3">
                             {user?.userName}
                         </h1>
-                        <div className="absolute top-0 z-1 right-0 p-2">
+                        <div className="absolute top-0 z-10 right-0 p-2">
                             { userId === user?._id && (
-                                <GoogleLogout 
-                                    render={(renderProps)=> (
-                                        <button
-                                            type="button"
-                                            className="bg-white p-2 rounded-full cursor-pointer outline-none shadow-md"
-                                            onClick={renderProps.onClick}
-                                            disabled={renderProps.disabled}
-                                        >
-                                            <AiOutlineLogout color="red" fontSize={21} />
-                                        </button>
-                                    )}
-                                    onLogoutSuccess={logout}
-                                    cookiePolicy="single_host_origin"
-                                />
+                                <button
+                                    type="button"
+                                    className="bg-white p-2 rounded-full cursor-pointer outline-none shadow-md"
+                                    onClick={logout}
+                                >
+                                    <AiOutlineLogout color="red" fontSize={21} />
+                                </button>
                             ) }
                         </div>
                     </div>

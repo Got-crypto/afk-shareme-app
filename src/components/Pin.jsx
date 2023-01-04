@@ -12,19 +12,18 @@ export default function Pin({ pin: { save, postedBy, image, _id, destination } }
     const [postHovered, setPostHovered] = useState(false)
     const navigate = useNavigate()
 
-    console.log('save', save)
-
-    console.log('destination', destination)
-
     const user = fetchUser()
 
+    
     const alreadySaved = !!(save?.filter(item => item?.postedBy?._id === user.sub))?.length
-
-    console.log('alreadySaved', alreadySaved)
+    
+    const [pinSaved, setPinSaved] = useState(alreadySaved)
+    
 
     const savePin = async id => {
         if( !alreadySaved ) {
             try{
+                setPinSaved(true)
                 await client
                     .patch(id)
                     .setIfMissing( { save: [] } )
@@ -38,13 +37,14 @@ export default function Pin({ pin: { save, postedBy, image, _id, destination } }
                     }])
                     .commit()   
 
-                window.location.reload()
+                // window.location.reload()
 
                 console.log("post saved successfully");
             } catch( err ){
                 console.log('error saving post', err)
             }
         } else{
+            setPinSaved(false)
             console.log("image already saved");
         }
     }
@@ -93,7 +93,7 @@ export default function Pin({ pin: { save, postedBy, image, _id, destination } }
                                 </a>
                             </div>
                             {
-                                alreadySaved ? (
+                                pinSaved ? (
                                     <button
                                      className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
                                     >
@@ -122,7 +122,7 @@ export default function Pin({ pin: { save, postedBy, image, _id, destination } }
                                         className="bg-white flex items-center gap-2 text-black font-bold p-2 pl-4 pr-4 rounded-full opacity-70 hover:opacity-100 hover:shadow-md"
                                     >
                                         <BsFillArrowUpRightCircleFill />
-                                        {destination.length > 20 ? destination.slice(8, 20) : destination(8)}
+                                        {destination.length > 20 ? destination.slice(8, 20) : destination.slice(8)}
                                     </a>
                                 )
                             }

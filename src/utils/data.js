@@ -16,6 +16,10 @@ export const categories = [
     image: 'https://i.pinimg.com/750x/66/b1/29/66b1296d36598122e6a4c5452b5a7149.jpg',
 },
 {
+    name: 'gaming',
+    image: 'https://assets.reedpopcdn.com/digitalfoundry-best-pc-gaming-controller-gamepad-1631465737278.jpg/BROK/resize/690%3E/format/jpg/quality/75/digitalfoundry-best-pc-gaming-controller-gamepad-1631465737278.jpg',
+},
+{
     name: 'photo',
     image: 'https://i.pinimg.com/236x/72/8c/b4/728cb43f48ca762a75da645c121e5c57.jpg',
 },

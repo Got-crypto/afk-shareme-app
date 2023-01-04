@@ -19,7 +19,6 @@ export default function Feed(){
             setLoading(true)
             
             if(categoryId) {
-                console.log('yoo');
                 const query = searchQuery(categoryId)
 
                 try{
@@ -33,8 +32,6 @@ export default function Feed(){
             } else {
                 try{
                     const data = await client.fetch(feedQuery)
-
-                    console.log('data', data)
 
                     setPins(data)
                     setLoading(false)
